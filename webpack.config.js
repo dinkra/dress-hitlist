@@ -39,7 +39,7 @@ const config = {
 			]
 		},
 		{
-			test: /\.(sass|scss)$/, // Check for sass or scss file names
+			test: /\.(sass|scss|css)$/, // Check for sass or scss file names
 			use: [
 				'style-loader',
 				'css-loader',

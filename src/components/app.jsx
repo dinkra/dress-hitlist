@@ -1,9 +1,11 @@
 import React from 'react';
+import _ from 'lodash'; //ES6 import to check our babel loader
 import $ from 'jquery';
 import 'whatwg-fetch';
 import classNames from 'classnames';
 import DressList from './dress-list.jsx';
 import Pagination from './pagination.jsx';
+import SortBy from './sort-by.jsx';
 
 /**
  * API
@@ -11,12 +13,13 @@ import Pagination from './pagination.jsx';
 
  var URL = "http://192.81.221.134:8080/";
 
- function fetchDresses(pageSize, pageNum, sortOn, sortOrder) {
- 	pageSize = pageSize || 12;
- 	pageNum = pageNum || 0; 
- 	sortOn = sortOn || ""; 
- 	sortOrder = sortOrder || "";
-	return fetch(URL + 'dresses?pageSize=' + pageSize + '&pageNum=' + pageNum)
+ function fetchDresses(params) {
+ 	var esc = encodeURIComponent;
+	var query = Object.keys(params)
+	    .filter(k => params[k] !== undefined)
+	    .map(k => esc(k) + '=' + esc(params[k]))
+	    .join('&');
+	return fetch(URL + 'dresses?' + query)
 		.then(function(response) {
 			return response.json();
 		})
@@ -32,44 +35,64 @@ class App extends React.Component {
 			totalPages: 0,
 			dresses: []
 		};
-		this.prevPage = this.prevPage.bind(this);
-		this.nextPage = this.nextPage.bind(this);
+		this.startSorting = this.startSorting.bind(this);
 	}
-	componentDidMount() {
-		fetchDresses(this.state.pageSize).then(response => {
+	setDresses(params) {
+		fetchDresses(params).then(response => {
 			this.setState({
 				dresses: response.items,
 				totalPages: response.total_pages
 			});
 		});
 	}
-	componentWillUnmount() {
-
-	}
-	prevPage(e) {
-		e.preventDefault();
-		const newPageNum = this.state.pageNum - 1;
-		this.setState({ pageNum: newPageNum });
-		fetchDresses(this.state.pageSize, this.state.pageNum).then(response => {
-			this.setState({ dresses: response.items });
+	componentDidMount() {
+		this.setDresses({
+			pageSize: this.state.pageSize,
+			pageNum: this.state.pageNum
 		});
 	}
-	nextPage(e) {
+	changePage(e, change) {
 		e.preventDefault();
-		const newPageNum = this.state.pageNum + 1;
+		const newPageNum = this.state.pageNum + change;
 		this.setState({ pageNum: newPageNum });
-		fetchDresses(this.state.pageSize, newPageNum).then(response => {
-			this.setState({ dresses: response.items });
+		this.setDresses({
+			pageSize: this.state.pageSize,
+			pageNum: newPageNum,
+			sortOn: this.state.sortOn,
+			sortOrder: this.state.sortOrder
+		});
+	}
+	startSorting(e) {
+		e.preventDefault();
+		let value = JSON.parse(e.target.value);
+		let newPageNum = 0;
+		this.setState({ 
+			pageNum: newPageNum,
+			sortOn:  value.sortOn,
+			sortOrder: value.sortOrder
+		});
+		this.setDresses({
+			pageSize: this.state.pageSize,
+			pageNum: newPageNum,
+			sortOn: value.sortOn,
+			sortOrder: value.sortOrder
 		});
 	}
 	render() {
-		return <div>
+		const s = this.state;
+		const pagination = () => <Pagination 
+			prevPage={e => this.changePage(e, -1)} 
+			nextPage={e => this.changePage(e, +1)}
+			pageNum={s.pageNum}
+			totalPages={s.totalPages} 
+		/>;
+		return <div className="container">
 			<h1>Dress list</h1>
-			<DressList dresses={this.state.dresses} />
-			<Pagination prevPage={this.prevPage} 
-						nextPage={this.nextPage}
-						pageNum={this.state.pageNum}
-						totalPages={this.state.totalPages}/>
+			<div>{1 + s.pageNum*s.pageSize} - {s.pageSize + s.pageNum*s.pageSize} from {s.totalPages * s.pageSize}</div>
+			<SortBy startSorting={this.startSorting} />
+			{pagination()}
+			<DressList dresses={s.dresses} />
+			{pagination()}
 		</div>
 	}
 }

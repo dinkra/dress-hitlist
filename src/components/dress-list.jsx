@@ -1,16 +1,16 @@
 import React from 'react';
 import classNames from 'classnames';
-import DressItem from './dress-item.jsx';
+import DressContainer from './dress-container.jsx';
  
 class DressList extends React.Component {
 	render() {
 		const dresses = this.props.dresses.map((dress, index) => 
-			<DressItem dress={dress}
+			<DressContainer dress={dress}
                   key={dress.id}
                   index={index}>
-            </DressItem>
+            </DressContainer>
         );
-		return <ul className="dress-list">
+		return <ul className="dress-list row">
 			{dresses}
 		</ul>
 	}
