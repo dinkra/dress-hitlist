@@ -1,7 +1,9 @@
 import React from 'react';
-import $ from "jquery";
+import $ from 'jquery';
 import 'whatwg-fetch';
-import DressItem from './dress-item.jsx';
+import classNames from 'classnames';
+import DressList from './dress-list.jsx';
+import Pagination from './pagination.jsx';
 
 /**
  * API
@@ -10,7 +12,6 @@ import DressItem from './dress-item.jsx';
  var URL = "http://192.81.221.134:8080/";
 
  function fetchDresses(pageSize, pageNum, sortOn, sortOrder) {
- 	console.log(pageSize, pageNum);
  	pageSize = pageSize || 12;
  	pageNum = pageNum || 0; 
  	sortOn = sortOn || ""; 
@@ -28,6 +29,7 @@ class App extends React.Component {
 		this.state = {
 			pageSize: 12,
 			pageNum: 0,
+			totalPages: 0,
 			dresses: []
 		};
 		this.prevPage = this.prevPage.bind(this);
@@ -36,7 +38,8 @@ class App extends React.Component {
 	componentDidMount() {
 		fetchDresses(this.state.pageSize).then(response => {
 			this.setState({
-				dresses: response.items
+				dresses: response.items,
+				totalPages: response.total_pages
 			});
 		});
 	}
@@ -45,60 +48,28 @@ class App extends React.Component {
 	}
 	prevPage(e) {
 		e.preventDefault();
-		this.state.pageNum--;
-		this.setState(prevState => ({
-			pageNum: prevState.pageNum--
-		}));
+		const newPageNum = this.state.pageNum - 1;
+		this.setState({ pageNum: newPageNum });
 		fetchDresses(this.state.pageSize, this.state.pageNum).then(response => {
-			this.setState({
-				dresses: response.items
-			});
+			this.setState({ dresses: response.items });
 		});
 	}
 	nextPage(e) {
 		e.preventDefault();
-		this.state.pageNum++;
-		this.setState(prevState => ({
-			pageNum: prevState.pageNum++
-		}));
-		fetchDresses(this.state.pageSize, this.state.pageNum).then(response => {
-			this.setState({
-				dresses: response.items
-			});
+		const newPageNum = this.state.pageNum + 1;
+		this.setState({ pageNum: newPageNum });
+		fetchDresses(this.state.pageSize, newPageNum).then(response => {
+			this.setState({ dresses: response.items });
 		});
 	}
 	render() {
-		console.log(this.state);
-		var dresses = this.state.dresses.map(function(dress, index) {
-            return (
-                <DressItem name={dress.name}
-                      brand_name={dress.brand_name}
-                      price={dress.price}
-                      thumbnails={dress.thumbnails}
-                      key={dress.id}
-                      index={index}>
-                </DressItem>
-            );
-        });
-        function NumberList(props) {
-			const numbers = props.numbers;
-			const listItems = numbers.map((number) =>
-				<ListItem key={number.toString()}
-				value={number} />
-			);
-			return (
-				<ul>
-					{listItems}
-				</ul>
-			);
-		}
 		return <div>
 			<h1>Dress list</h1>
-			<div className="dress-list">
-				{dresses}
-			</div>
-			<button onClick={this.prevPage}>prev page</button>
-			<button onClick={this.nextPage}>next page</button>
+			<DressList dresses={this.state.dresses} />
+			<Pagination prevPage={this.prevPage} 
+						nextPage={this.nextPage}
+						pageNum={this.state.pageNum}
+						totalPages={this.state.totalPages}/>
 		</div>
 	}
 }
