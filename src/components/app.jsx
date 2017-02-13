@@ -16,73 +16,141 @@ class App extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			pageSize: 12,
-			pageNum: 0,
-			totalPages: 0,
-			dresses: []
+			activeList: "dressesList",
+			dressesList: {
+				pageSize: 12,
+				pageNum: 0,
+				totalPages: 0,
+				dresses: []
+			},
+			hitList: {
+				dresses: []
+			} 
 		};
 		this.startSorting = this.startSorting.bind(this);
+		this.setRating = this.setRating.bind(this);
+		this.changeActiveList = this.changeActiveList.bind(this);
 	}
+
 	setDresses(params) {
-		Api.getDresses(params).then(response => {
-			this.setState({
-				dresses: response.items,
-				totalPages: response.total_pages
+		if (this.state.activeList == "dressesList") {
+			Api.getDresses(params).then(response => {
+				this.setState({
+					dressesList: {
+						...this.state.dressesList,
+					 	dresses: response.items,
+					 	totalPages: response.total_pages,					 	
+					}
+				});
 			});
-		});
+		} 
+		if (this.state.activeList == "hitList") {
+			Api.getHitlist().then(response => {
+				this.setState({
+					hitList: {
+					 	dresses: response.items					 	
+					}
+				});
+			});
+		}
 	}
 	componentDidMount() {
-		this.setDresses({
-			pageSize: this.state.pageSize,
-			pageNum: this.state.pageNum
-		});
+			this.setDresses({
+				pageSize: this.state.dressesList.pageSize,
+				pageNum: this.state.dressesList.pageNum
+			});
 	}
 	changePage(e, change) {
 		e.preventDefault();
-		const newPageNum = this.state.pageNum + change;
-		this.setState({ pageNum: newPageNum });
+		const s = this.state.dressesList;
+		const newPageNum = s.pageNum + change;
+		this.setState({ 
+			dressesList: {
+				...this.state.dressesList,
+				pageNum: newPageNum 
+			}
+		});
 		this.setDresses({
-			pageSize: this.state.pageSize,
+			pageSize: s.pageSize,
 			pageNum: newPageNum,
-			sortOn: this.state.sortOn,
-			sortOrder: this.state.sortOrder
+			sortOn: s.sortOn,
+			sortOrder: s.sortOrder
 		});
 	}
 	startSorting(e) {
 		e.preventDefault();
+		const s = this.state.dressesList;
 		let value = JSON.parse(e.target.value);
 		let newPageNum = 0;
 		this.setState({ 
-			pageNum: newPageNum,
-			sortOn:  value.sortOn,
-			sortOrder: value.sortOrder
+			dressesList: {
+				...this.state.dressesList,
+				pageNum: newPageNum,
+				sortOn:  value.sortOn,
+				sortOrder: value.sortOrder
+			}
 		});
 		this.setDresses({
-			pageSize: this.state.pageSize,
+			pageSize: s.pageSize,
 			pageNum: newPageNum,
 			sortOn: value.sortOn,
 			sortOrder: value.sortOrder
 		});
 	}
+	setRating(id, rating) {
+		Api.postHitlistLines(id, rating)
+			.then((res) => { 
+				let dresses = this.state.hitList.dresses.slice();
+				let d = this.state.dressesList.dresses.find((dress) => (dress.id == res.dress_id))
+				dresses.push(d);
+				this.setState({ 
+					hitList: {
+						dresses: dresses
+					}
+				});
+			})
+			.then(() => {
+				console.log(this.state.hitList.dresses);
+			})
+	}
+	changeActiveList(e, activeList) {
+		console.log(e, activeList);
+		e.preventDefault();
+		this.setState({ 
+			activeList: activeList
+		});
+	}
 	render() {
-		const s = this.state;
-		const pagination = () => <Pagination 
-			prevPage={e => this.changePage(e, -1)} 
-			nextPage={e => this.changePage(e, +1)}
-			pageNum={s.pageNum}
-			totalPages={s.totalPages} 
-		/>;
-		return <div>
-			<Header />
-			<section className="container content">
+		let section;
+		if (this.state.activeList == "dressesList") {
+			let s = this.state.dressesList;
+			const pagination = () => <Pagination 
+				prevPage={e => this.changePage(e, -1)} 
+				nextPage={e => this.changePage(e, +1)}
+				pageNum={s.pageNum}
+				totalPages={s.totalPages} 
+			/>;
+			section = <section className="container content dresslist">
 				<div className="sorting-container">
 					<p className="page-numbering">{1 + s.pageNum*s.pageSize} - {s.pageSize + s.pageNum*s.pageSize} from {s.totalPages * s.pageSize}</p>
 					<SortBy startSorting={this.startSorting} />
 				</div>
 				{pagination()}
-				<DressList dresses={s.dresses} />
+				<DressList dresses={s.dresses} setRating={this.setRating} />
 				{pagination()}
-			</section>
+			</section>;
+		} else {
+			let s = this.state.hitList;
+			section = <section className="container content hitlist">
+				<div className="sorting-container">
+					<SortBy startSorting={this.startSorting} />
+				</div>
+				<DressList dresses={s.dresses} />
+			</section>;
+		}
+		return <div>
+			<Header changeActiveList={this.changeActiveList} />
+			{section}
 		</div>
 	}
 }

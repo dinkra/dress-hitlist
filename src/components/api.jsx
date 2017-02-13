@@ -76,7 +76,7 @@ const Api = {
 		    .map(k => esc(k) + '=' + esc(params[k]))
 		    .join('&');
     	return this.get(url + query)
-            .then(function(response) { return response.json(); })
+            .then((response) => response.json())
 			.catch(function(ex) { console.log('parsing failed', ex); })
     },
 

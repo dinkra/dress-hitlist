@@ -10,4 +10,5 @@ Demo dress hitlist for fashiontrade interview.
 - git clone https://github.com/dinkra/dress-hitlist.git
 - npm install
 - npm update
-- $PATH webpack
+- $PATH webpack-web-server  (development)
+- webpack -p (production)

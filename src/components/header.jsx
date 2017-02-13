@@ -8,8 +8,8 @@ class Header extends React.Component {
 				<a className="logo-placeholder">
 					<h1>Your Logo</h1>
 				</a>
-				<a href="" className="tab"><h4 className="dresses-tab">ALL DRESSES</h4></a>
-	            <a href="" className="tab"><h4 className="hitlist-tab">HITLIST</h4></a>
+				<a className="tab" onClick={ e => this.props.changeActiveList(e, "dressesList")}><h4 className="dresses-tab">ALL DRESSES</h4></a>
+	            <a className="tab" onClick={ e => this.props.changeActiveList(e, "hitList")}><h4 className="hitlist-tab">HITLIST</h4></a>
 			</div>
 		</header>
 	}

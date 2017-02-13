@@ -5,7 +5,7 @@ import HoverContainer from './hover-container.jsx';
 class DressContainer extends React.Component {
 	render() {
 		return <li className="dress-container three columns"> 
-			<HoverContainer dress={this.props.dress} />
+			<HoverContainer dress={this.props.dress} setRating={this.props.setRating} />
 			<img src={this.props.dress.thumbnails[0]} />
 			<div className="dress-info">
 				<h4 className="dress-name">{this.props.dress.name}</h4>
