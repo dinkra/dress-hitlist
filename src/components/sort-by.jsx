@@ -27,7 +27,7 @@ class SortBy extends React.Component {
         );
 		return <p className="sort-options">
 			<label htmlFor="sortBy">
-				<span className="sort-option-label">SORT BY </span>
+				<span className="sort-option-label">Sort by </span>
 			</label>
 			<select id="sortBy" onChange={this.props.startSorting}>
 				{sortOptionsList}

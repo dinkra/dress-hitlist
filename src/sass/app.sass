@@ -1,7 +1,16 @@
-html
-	font-family: Tahoma,Arial,sans-serif !important
+
+// colors
+$amaranth: #E83B4F
+$silver: #C8C8C8
+$seashell: #F1F1F1
+$new-york-pink: #D57C7C
+$dove-gray: #6F6F6F
+
 
 body
+	background-color: white
+	color: $dove-gray
+	background: linear-gradient(-45deg, rgba(197, 140, 142, 1), rgba(130, 210, 218, 1))
 
 *
     box-sizing: border-box;
@@ -10,13 +19,113 @@ body
 .container
 	max-width: 960px
 	margin: 0 auto
+	padding: 0 1%
+
+.content
+	background-color: white
+	min-height: 100%
+	margin-bottom: 30px
+	padding-bottom: 10px
+
+.header
+	position: relative
+	z-index: 100
+	height: 60px
+	background-color: white
+	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(0, 0, 0, 0.05)
+	.logo-placeholder
+		float: left
+		line-height: 60px
+		h1
+			margin: 0
+			color: $new-york-pink
+	.tab
+		float: left
+		margin-left: 40px
+		text-decoration: none
+		color: $dove-gray
+		h4
+			margin: 0
+			line-height: 60px
+			font-weight: normal
+
+
+.sorting-container
+	&::after 
+		clear: both;
+		content: "";
+		display: block;
+	.page-numbering
+		float: left
+	.sort-options
+		float: right
+
+.pagination-container
+	&::after 
+		clear: both;
+		content: "";
+		display: block;
+	button
+		background: none
+		border: none
+		&:disabled
+			opacity: .2
+	.prev
+		float: left
+	.next
+		float: right
+	.arrow
+		height: 20px
+		pointer-events: none;
+		cursor: pointer
 
 .dress-list
 	list-style: none
-	.dress-item
+	padding: 0
+	margin: 0
+	.dress-container
+		&:nth-child(4n+1)
+			margin-left: 0% !important
+		&:nth-child(4n+0)
+			margin-right: 0% !important
+	.dress-container
+		position: relative
 		float: left
-		height: 438px
-		width: 25%
-		margin: 0
+		background-color: $seashell
+		width: 23.5%
+		margin: 1%
+		border: 1px solid #E1E3DF
+		border-radius: 3px
 		img
-			height: 246px
+			display: block
+			margin: 0 auto
+			text-align: center
+			width: 100%
+		.dress-info
+			padding: 10px
+			*
+				margin: 0 0 5px 0
+		.dress-name
+			color: $dove-gray
+			font-weight: normal
+			height: 38px
+		.dress-brand
+			color: $silver
+			font-weight: normal
+		.dress-price
+			color: $new-york-pink
+			text-align: right
+		.hover-container
+			position: absolute
+			height: 280px
+			width: 80%
+			margin: 10px 10%
+			background-color: white
+			opacity: 0
+			transition: all 1s
+			.rating
+				cursor: pointer
+		&:hover
+			.hover-container
+				opacity: .9
+				transition: all .3s

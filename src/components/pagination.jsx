@@ -4,8 +4,8 @@ import ReactDOM from 'react-dom';
 class Pagination extends React.Component {
 	render() {
 		return <div className="pagination-container"> 
-			<button onClick={this.props.prevPage} disabled={this.props.pageNum == 0}>prev page</button>
-			<button onClick={this.props.nextPage} disabled={this.props.pageNum == this.props.totalPages}>next page</button>
+			<button className="button prev" onClick={this.props.prevPage} disabled={this.props.pageNum == 0}><img className="arrow" src="images/left_arrow.svg" /></button>
+			<button className="button next" onClick={this.props.nextPage} disabled={this.props.pageNum == this.props.totalPages}><img className="arrow" src="images/right_arrow.svg" /></button>
 		</div>
 	}
 }

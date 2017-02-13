@@ -3,28 +3,14 @@ import _ from 'lodash'; //ES6 import to check our babel loader
 import $ from 'jquery';
 import 'whatwg-fetch';
 import classNames from 'classnames';
+import Api from './api.jsx';
+import Header from './header.jsx';
 import DressList from './dress-list.jsx';
 import Pagination from './pagination.jsx';
 import SortBy from './sort-by.jsx';
 
-/**
- * API
- */
-
- var URL = "http://192.81.221.134:8080/";
-
- function fetchDresses(params) {
- 	var esc = encodeURIComponent;
-	var query = Object.keys(params)
-	    .filter(k => params[k] !== undefined)
-	    .map(k => esc(k) + '=' + esc(params[k]))
-	    .join('&');
-	return fetch(URL + 'dresses?' + query)
-		.then(function(response) {
-			return response.json();
-		})
-		.catch(function(ex) { console.log('parsing failed', ex); })
-}
+Api.getHitlist()
+	.then(function(res) { console.log(res) });
  
 class App extends React.Component {
 	constructor(props) {
@@ -38,7 +24,7 @@ class App extends React.Component {
 		this.startSorting = this.startSorting.bind(this);
 	}
 	setDresses(params) {
-		fetchDresses(params).then(response => {
+		Api.getDresses(params).then(response => {
 			this.setState({
 				dresses: response.items,
 				totalPages: response.total_pages
@@ -86,13 +72,17 @@ class App extends React.Component {
 			pageNum={s.pageNum}
 			totalPages={s.totalPages} 
 		/>;
-		return <div className="container">
-			<h1>Dress list</h1>
-			<div>{1 + s.pageNum*s.pageSize} - {s.pageSize + s.pageNum*s.pageSize} from {s.totalPages * s.pageSize}</div>
-			<SortBy startSorting={this.startSorting} />
-			{pagination()}
-			<DressList dresses={s.dresses} />
-			{pagination()}
+		return <div>
+			<Header />
+			<section className="container content">
+				<div className="sorting-container">
+					<p className="page-numbering">{1 + s.pageNum*s.pageSize} - {s.pageSize + s.pageNum*s.pageSize} from {s.totalPages * s.pageSize}</p>
+					<SortBy startSorting={this.startSorting} />
+				</div>
+				{pagination()}
+				<DressList dresses={s.dresses} />
+				{pagination()}
+			</section>
 		</div>
 	}
 }

@@ -29,16 +29,6 @@ const config = {
 			}]
 		},
 		{
-			test: /\.css$/,
-			include: [
-			    path.resolve(__dirname, "./src/css")
-			],
-			use: [
-				'style-loader', 
-				{ loader: 'css-loader', options: { modules: true } }
-			]
-		},
-		{
 			test: /\.(sass|scss|css)$/, // Check for sass or scss file names
 			use: [
 				'style-loader',
@@ -49,7 +39,26 @@ const config = {
 		{ 
 			test: /\.json$/, 
 			loader: "json-loader"  // JSON loader
-		}]
+		},
+		{
+	        test: /\.(jpe?g|png|gif|svg)$/i,
+	        use: [
+	        	{
+	        		loader: "file-loader",
+	        		options: {
+	        			name: "[hash].[ext]"
+	        		}
+	        	},
+	        	{
+	        		loader: "image-webpack-loader",
+	        		options: {
+	        			bypassOnDebug: true,
+	        			optimizationLevel: 7,
+	        			interlaced: false
+	        		}
+	        	}
+	        ]
+	    }]
 	},
 	resolve: {
 	    modules: [path.resolve(__dirname, './src'), 'node_modules']
