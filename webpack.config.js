@@ -10,8 +10,7 @@ const config = {
 	},
 	output: {
 		path: path.resolve(__dirname, './dist'), // `dist` is the destination
-    	filename: 'bundle.js',
-    	publicPath: "/assets",
+    	filename: 'bundle.js', 
 	},
 	devServer: {
 		open: true, // to open the local server in browser
