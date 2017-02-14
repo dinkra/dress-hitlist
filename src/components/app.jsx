@@ -101,21 +101,31 @@ class App extends React.Component {
 		Api.postHitlistLines(id, rating)
 			.then((res) => { 
 				let dresses = this.state.hitList.dresses.slice();
-				let d = this.state.dressesList.dresses.find((dress) => (dress.id == res.dress_id))
+				let d = this.state.dressesList.dresses.find((dress) => (dress.id == res.dress_id));
+				d.rating = res.rating;
 				dresses.push(d);
 				this.setState({ 
 					hitList: {
 						dresses: dresses
 					}
 				});
+				return res;
 			})
-			.then(() => {
-				console.log(this.state.hitList.dresses);
+			.then((res) => {
+				let dresses = this.state.dressList.dresses.slice();
+				dresses.forEach((dress) => { if (dress.id == res.dress_id) dress.rating = res.rating });
+				this.setState({ 
+					dressesList: {
+						...this.state.dressesList,
+						dresses: dresses
+					}
+				});
 			})
 	}
 	changeActiveList(e, activeList) {
-		console.log(e, activeList);
 		e.preventDefault();
+		$('.active').removeClass('active');
+		$(e.target).addClass('active');
 		this.setState({ 
 			activeList: activeList
 		});

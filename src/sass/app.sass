@@ -1,3 +1,4 @@
+/* Variables */
 
 // colors
 $amaranth: #E83B4F
@@ -27,6 +28,8 @@ body
 	margin-bottom: 30px
 	padding-bottom: 10px
 
+/* header component styles */
+
 .header
 	position: relative
 	z-index: 100
@@ -48,7 +51,10 @@ body
 			margin: 0
 			line-height: 60px
 			font-weight: normal
+	.active
+		text-decoration: underline
 
+/* sorting component styles */
 
 .sorting-container
 	&::after 
@@ -59,6 +65,8 @@ body
 		float: left
 	.sort-options
 		float: right
+
+/* pagination component styles */
 
 .pagination-container
 	&::after 
@@ -78,6 +86,15 @@ body
 		height: 20px
 		pointer-events: none;
 		cursor: pointer
+
+
+/* dressList component styles */
+
+ul
+	list-style: none
+	padding: 0
+	margin: 0
+	min-height: 100vh
 
 .dress-list
 	list-style: none
@@ -118,14 +135,23 @@ body
 		.hover-container
 			position: absolute
 			height: 280px
+			padding-top: 100px
 			width: 80%
 			margin: 10px 10%
 			background-color: white
 			opacity: 0
 			transition: all 1s
+			box-shadow: 0 1px 3px rgba(0, 0, 0, .15)
+			p
+				text-align: center
 			.rating
 				cursor: pointer
 		&:hover
 			.hover-container
 				opacity: .9
 				transition: all .3s
+
+.hitlist
+	.hover-container
+		display: none
+

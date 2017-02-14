@@ -215,4 +215,5 @@ jspm_packages
 bower_components/
 
 build/
+dist/
 public/
