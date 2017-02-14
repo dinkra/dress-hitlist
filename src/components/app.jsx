@@ -30,34 +30,39 @@ class App extends React.Component {
 		this.setRating = this.setRating.bind(this);
 		this.changeActiveList = this.changeActiveList.bind(this);
 	}
-
 	setDressesList(params) {
-		if (this.state.activeList == "dressesList") {
-			Api.getDresses(params).then(response => {
-				this.setState({
-					dressesList: {
-						...this.state.dressesList,
-					 	dresses: response.items,
-					 	totalPages: response.total_pages,					 	
-					}
-				});
+		Api.getDresses(params).then(response => {
+			this.setState({
+				dressesList: {
+					...this.state.dressesList,
+				 	dresses: response.items,
+				 	totalPages: response.total_pages,					 	
+				}
 			});
-		} 
-		if (this.state.activeList == "hitList") {
-			Api.getHitlist().then(response => {
-				this.setState({
-					hitList: {
-					 	dresses: response.items					 	
-					}
-				});
+		});
+	}
+	setHitList() {
+		Api.getHitlist().then(response => {
+			let lines = response.lines;
+			const allDresses = this.state.dressesList.dresses;
+			lines.forEach((line) => {
+				let thatDress = allDresses.find((d) => d.id == line.dress_id);
+				line = _.extend(line, thatDress);
 			});
-		}
+			console.log(lines);
+			this.setState({
+				hitList: {
+				 	dresses: lines					 	
+				}
+			});
+		});
 	}
 	componentDidMount() {
 			this.setDressesList({
 				pageSize: this.state.dressesList.pageSize,
 				pageNum: this.state.dressesList.pageNum
 			});
+			this.setHitList();
 	}
 	changePage(e, change) {
 		e.preventDefault();
@@ -151,9 +156,6 @@ class App extends React.Component {
 		} else {
 			let s = this.state.hitList;
 			section = <section className="container content hitlist">
-				<div className="sorting-container">
-					<SortBy startSorting={this.startSorting} />
-				</div>
 				<DressList dresses={s.dresses} />
 			</section>;
 		}
