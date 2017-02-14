@@ -10,7 +10,7 @@ class HoverContainer extends React.Component {
 	}
 	render() {
 		return <div className="hover-container">
-			{this.props.dress.rating ? <p>Item is added to hitlist</p> : <p>Add item to hitlist</p>}
+			{this.props.dress.rating ? <p>In hitlist</p> : <p>Add to hitlist<br/> with rating</p>}
 			<RatingWidget setRating={this.props.setRating} dress={this.props.dress} />
 		</div>
 	}

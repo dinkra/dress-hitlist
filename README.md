@@ -11,7 +11,7 @@ Demo dress hitlist for fashiontrade interview.
 - $ npm install
 - $ npm update
 - $ PATH=$PATH:node_modules/.bin/
-- $ webpack-web-server (development, run server on http://localhost:9000/)
+- $ webpack-dev-server (development, run server on http://localhost:9000/)
 - $ webpack -p (production)
 
 ### What i can do with hitlist? ###

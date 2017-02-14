@@ -9,8 +9,7 @@ import DressList from './dress-list.jsx';
 import Pagination from './pagination.jsx';
 import SortBy from './sort-by.jsx';
 
-Api.getHitlist()
-	.then(function(res) { console.log(res) });
+Api.getHitlist().then((res) => { console.log(res) });
  
 class App extends React.Component {
 	constructor(props) {
@@ -32,7 +31,7 @@ class App extends React.Component {
 		this.changeActiveList = this.changeActiveList.bind(this);
 	}
 
-	setDresses(params) {
+	setDressesList(params) {
 		if (this.state.activeList == "dressesList") {
 			Api.getDresses(params).then(response => {
 				this.setState({
@@ -55,7 +54,7 @@ class App extends React.Component {
 		}
 	}
 	componentDidMount() {
-			this.setDresses({
+			this.setDressesList({
 				pageSize: this.state.dressesList.pageSize,
 				pageNum: this.state.dressesList.pageNum
 			});
@@ -70,7 +69,7 @@ class App extends React.Component {
 				pageNum: newPageNum 
 			}
 		});
-		this.setDresses({
+		this.setDressesList({
 			pageSize: s.pageSize,
 			pageNum: newPageNum,
 			sortOn: s.sortOn,
@@ -90,7 +89,7 @@ class App extends React.Component {
 				sortOrder: value.sortOrder
 			}
 		});
-		this.setDresses({
+		this.setDressesList({
 			pageSize: s.pageSize,
 			pageNum: newPageNum,
 			sortOn: value.sortOn,
@@ -112,7 +111,7 @@ class App extends React.Component {
 				return res;
 			})
 			.then((res) => {
-				let dresses = this.state.dressList.dresses.slice();
+				let dresses = this.state.dressesList.dresses.slice();
 				dresses.forEach((dress) => { if (dress.id == res.dress_id) dress.rating = res.rating });
 				this.setState({ 
 					dressesList: {

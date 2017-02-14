@@ -1,8 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import HoverContainer from './hover-container.jsx';
+import RatingWidget from './rating-widget.jsx';
 
 class DressContainer extends React.Component {
+	constructor(props) {
+		super(props);
+	}
 	render() {
 		return <li className="dress-container three columns"> 
 			<HoverContainer dress={this.props.dress} setRating={this.props.setRating} />
