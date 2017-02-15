@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 class SortBy extends React.Component {
 	render() {
-		const sortOptions = [{},{
+		const sortOptions = [{text: "recommended"},{
 			text: "price low to high",
 			sortOn: "price",
 			sortOrder: "ascending" 
@@ -27,7 +27,7 @@ class SortBy extends React.Component {
         );
 		return <p className="sort-options">
 			<label htmlFor="sortBy">
-				<span className="sort-option-label">Sort by </span>
+				<span className="sort-option-label">sort by </span>
 			</label>
 			<select id="sortBy" onChange={this.props.startSorting}>
 				{sortOptionsList}

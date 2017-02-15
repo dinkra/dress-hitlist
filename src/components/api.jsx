@@ -105,10 +105,9 @@ const Api = {
 			.catch(function(ex) { console.log('parsing failed', ex); })
     },
 
-    deleteHitlistLines: function(lineId) {
+    deleteHitlistLine: function(lineId) {
     	var url = this.endpoints.base_url + this.endpoints.delete_hitlist_lines.replace('{lineId}', lineId);
     	return this.delete(url)
-            .then(function(response) { return response.json(); })
 			.catch(function(ex) { console.log('parsing failed', ex); })
     },
 

@@ -9,8 +9,6 @@ import DressList from './dress-list.jsx';
 import Pagination from './pagination.jsx';
 import SortBy from './sort-by.jsx';
 
-Api.getHitlist().then((res) => { console.log(res) });
- 
 class App extends React.Component {
 	constructor(props) {
 		super(props);
@@ -29,6 +27,7 @@ class App extends React.Component {
 		this.startSorting = this.startSorting.bind(this);
 		this.setRating = this.setRating.bind(this);
 		this.changeActiveList = this.changeActiveList.bind(this);
+		this.deleteHitlistLine = this.deleteHitlistLine.bind(this);
 	}
 	setDressesList(params) {
 		Api.getDresses(params).then(response => {
@@ -39,21 +38,31 @@ class App extends React.Component {
 				 	totalPages: response.total_pages,					 	
 				}
 			});
-		});
+		}).then(() => { this.setHitList() })
 	}
 	setHitList() {
+		let dressesList = this.state.dressesList.dresses.slice();
 		Api.getHitlist().then(response => {
 			let lines = response.lines;
-			const allDresses = this.state.dressesList.dresses;
 			lines.forEach((line) => {
-				let thatDress = allDresses.find((d) => d.id == line.dress_id);
-				line = _.extend(line, thatDress);
-			});
-			console.log(lines);
-			this.setState({
-				hitList: {
-				 	dresses: lines					 	
-				}
+				Api.getDressesId(line.dress_id).then((res) => { 
+					line = _.extend(line, res); 
+					dressesList.forEach((dress) => { 
+						if (dress.id == line.id) {
+							dress = _.extend(dress, res, line); 
+						}
+					});
+
+					this.setState({
+						hitList: {
+						 	dresses: lines					 	
+						},
+						dressesList: {
+							...this.state.dressesList,
+						 	dresses: dressesList				 	
+						}
+					});
+				});
 			});
 		});
 	}
@@ -62,7 +71,6 @@ class App extends React.Component {
 				pageSize: this.state.dressesList.pageSize,
 				pageNum: this.state.dressesList.pageNum
 			});
-			this.setHitList();
 	}
 	changePage(e, change) {
 		e.preventDefault();
@@ -107,6 +115,7 @@ class App extends React.Component {
 				let dresses = this.state.hitList.dresses.slice();
 				let d = this.state.dressesList.dresses.find((dress) => (dress.id == res.dress_id));
 				d.rating = res.rating;
+				d.line_id = res.line_id;
 				dresses.push(d);
 				this.setState({ 
 					hitList: {
@@ -134,6 +143,24 @@ class App extends React.Component {
 			activeList: activeList
 		});
 	}
+	deleteHitlistLine(e, lineId) {
+		Api.deleteHitlistLine(lineId).then(() => {
+			let dressesList = this.state.dressesList.dresses.map(d => {
+				if (d.line_id == lineId) { d.rating = undefined; }
+				return d;
+			});
+			let hitlist  = this.state.hitList.dresses.filter(d => d.line_id != lineId);
+			this.setState({
+				hitList: {
+				 	dresses: hitlist				 	
+				},
+				dressesList: {
+					...this.state.dressesList,
+				 	dresses: dressesList				 	
+				}
+			});
+		})
+	}
 	render() {
 		let section;
 		if (this.state.activeList == "dressesList") {
@@ -150,13 +177,14 @@ class App extends React.Component {
 					<SortBy startSorting={this.startSorting} />
 				</div>
 				{pagination()}
-				<DressList dresses={s.dresses} setRating={this.setRating} />
+				<DressList dresses={s.dresses} setRating={this.setRating} deleteHitlistLine={this.deleteHitlistLine} />
 				{pagination()}
 			</section>;
 		} else {
 			let s = this.state.hitList;
 			section = <section className="container content hitlist">
-				<DressList dresses={s.dresses} />
+				<p className="dresses-in-hitlist">Dresses in hitlist</p>
+				<DressList dresses={s.dresses} deleteHitlistLine={this.deleteHitlistLine}/>
 			</section>;
 		}
 		return <div>

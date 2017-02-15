@@ -6,6 +6,7 @@ $silver: #C8C8C8
 $seashell: #F1F1F1
 $new-york-pink: #D57C7C
 $dove-gray: #6F6F6F
+$bermuda: #82D2DA
 
 
 body
@@ -47,12 +48,20 @@ body
 		margin-left: 40px
 		text-decoration: none
 		color: $dove-gray
+		cursor: pointer
+		height: 60px
+		&:nth-child(2)
+			margin-left: 80px
 		h4
 			margin: 0
-			line-height: 60px
+			line-height: 58px
 			font-weight: normal
+		&:not(.active)
+			&:hover
+				opacity: 0.8
 	.active
-		text-decoration: underline
+		border-bottom: 2px solid $dove-gray
+		
 
 /* sorting component styles */
 
@@ -89,6 +98,9 @@ body
 
 
 /* dressList component styles */
+
+.dresses-in-hitlist
+	display: inline-block
 
 ul
 	list-style: none
@@ -131,9 +143,18 @@ ul
 		.dress-brand
 			color: $silver
 			font-weight: normal
+		.dress-rating
+			float: left
+			color: $bermuda
+			line-height: 23px
 		.dress-price
 			color: $new-york-pink
 			text-align: right
+		.rating
+			padding: 0px
+			&> label:before
+				margin: 3px 2px
+				font-size: 1em;
 		.hover-container
 			position: absolute
 			height: 280px
@@ -144,16 +165,21 @@ ul
 			opacity: 0
 			transition: all 1s
 			box-shadow: 0 1px 3px rgba(0, 0, 0, .15)
+			text-align: center
 			p
 				text-align: center
 			.rating
 				cursor: pointer
+				padding: 0.35em 0.625em 0.75em
+				&> label:before
+					margin: 5px
+					font-size: 1.25em;
+			.remove-button
+				background-color: transparent
+				border: 1px solid grey
+				border-radius: 3px
 		&:hover
 			.hover-container
 				opacity: .9
 				transition: all .3s
-
-.hitlist
-	.hover-container
-		display: none
 

@@ -9,9 +9,13 @@ class HoverContainer extends React.Component {
 		super(props);
 	}
 	render() {
+		// if (this.props.dress.rating) return null;
 		return <div className="hover-container">
-			{this.props.dress.rating ? <p>In hitlist</p> : <p>Add to hitlist<br/> with rating</p>}
-			<RatingWidget setRating={this.props.setRating} dress={this.props.dress} />
+			{this.props.dress.rating ? <p>In hitlist</p> : <p>Rate to add<br/> to hitlist</p>}
+			<RatingWidget setRating={this.props.setRating} dress={this.props.dress} prefix="hover-container" />
+			{this.props.dress.rating && 
+				<button className="remove-button" onClick={ e => this.props.deleteHitlistLine(e, this.props.dress.line_id)}>remove</button>
+			}
 		</div>
 	}
 }
